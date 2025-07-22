@@ -1,0 +1,187 @@
+.location-panel {
+  width: 320px;
+  background: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.locations-section {
+  flex: 1;
+  overflow: hidden;
+}
+
+.location-panel-header {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.location-panel-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.toggle-all-btn {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #666;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle-all-btn:hover {
+  background: #f0f0f0;
+}
+
+.location-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.message-group {
+  margin-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 12px;
+}
+
+.message-header {
+  padding: 8px 16px;
+  background: #f8f9fa;
+  margin-bottom: 8px;
+}
+
+.message-time {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+.location-items {
+  padding: 0 8px;
+}
+
+.location-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 2px;
+}
+
+.location-item:hover {
+  background: #f0f8ff;
+}
+
+.location-icon {
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.location-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.triangles-section {
+  border-top: 2px solid #e0e0e0;
+  padding: 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.add-triangle-btn {
+  background: none;
+  border: 1px solid #4CBACB;
+  color: #4CBACB;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-triangle-btn:hover {
+  background: #4CBACB;
+  color: white;
+}
+
+.triangle-items {
+  /* Empty for now - triangles will be populated */
+}
+
+.triangle-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.triangle-item:hover {
+  background: #f0f8ff;
+  padding: 8px 8px;
+  margin: 0 -8px;
+  border-radius: 4px;
+}
+
+.triangle-icon {
+  margin-right: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.triangle-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.no-triangles {
+  padding: 16px 8px;
+  text-align: center;
+}
+
+.placeholder-text {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+}
+
+/* Scrollbar styling for webkit browsers */
+.location-panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.location-panel-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.location-panel-content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.location-panel-content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

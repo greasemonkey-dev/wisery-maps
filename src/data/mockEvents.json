@@ -1,0 +1,351 @@
+{
+  "conversations": [
+    {
+      "conversationId": "conv_warehouse_investigation",
+      "title": "Warehouse District Phone Activity",
+      "timestamp": "2025-07-31T14:30:00Z",
+      "messages": [
+        {
+          "messageId": "msg_warehouse_calls",
+          "summary": "Multiple phone calls detected around warehouse district",
+          "timestamp": "2025-07-31T14:30:00Z",
+          "locations": [
+            {
+              "id": "warehouse_call_1",
+              "coordinates": [-0.1276, 51.5074],
+              "label": "Warehouse Loading Bay",
+              "context": "Suspicious call activity during off-hours",
+              "timestamp": "2025-07-31T02:15:00Z"
+            },
+            {
+              "id": "warehouse_call_2", 
+              "coordinates": [-0.1278, 51.5076],
+              "label": "Warehouse Office Complex",
+              "context": "Encrypted communication detected",
+              "timestamp": "2025-07-31T02:18:00Z"
+            },
+            {
+              "id": "warehouse_call_3",
+              "coordinates": [-0.1274, 51.5072],
+              "label": "Warehouse Security Gate",
+              "context": "Brief coordination call",
+              "timestamp": "2025-07-31T02:22:00Z"
+            }
+          ]
+        },
+        {
+          "messageId": "msg_tower_surveillance",
+          "summary": "Cell tower data showing movement patterns",
+          "timestamp": "2025-07-31T15:45:00Z",
+          "locations": [
+            {
+              "id": "tower_bridge_1",
+              "coordinates": [-0.0757, 51.5183],
+              "label": "Tower Bridge South",
+              "context": "Vehicle tracking signal",
+              "timestamp": "2025-07-31T03:30:00Z"
+            },
+            {
+              "id": "tower_bridge_2",
+              "coordinates": [-0.0755, 51.5185],
+              "label": "Tower Bridge North",
+              "context": "Signal handoff detected",
+              "timestamp": "2025-07-31T03:32:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conversationId": "conv_gang_territory",
+      "title": "Gang Territory Analysis",
+      "timestamp": "2025-07-30T20:15:00Z",
+      "messages": [
+        {
+          "messageId": "msg_south_london",
+          "summary": "Coordinated activity in South London",
+          "timestamp": "2025-07-30T20:15:00Z",
+          "locations": [
+            {
+              "id": "gang_meeting_1",
+              "coordinates": [-0.1180, 51.4816],
+              "label": "Elephant & Castle",
+              "context": "Weekly coordination meeting",
+              "timestamp": "2025-07-30T18:00:00Z"
+            },
+            {
+              "id": "gang_meeting_2",
+              "coordinates": [-0.1182, 51.4814],
+              "label": "Shopping Center Parking",
+              "context": "Vehicle exchange point",
+              "timestamp": "2025-07-30T18:15:00Z"
+            },
+            {
+              "id": "gang_meeting_3",
+              "coordinates": [-0.1178, 51.4818],
+              "label": "Underground Station",
+              "context": "Lookout position",
+              "timestamp": "2025-07-30T18:30:00Z"
+            },
+            {
+              "id": "gang_meeting_4",
+              "coordinates": [-0.1184, 51.4812],
+              "label": "Back Alley Access",
+              "context": "Escape route checkpoint",
+              "timestamp": "2025-07-30T18:45:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conversationId": "conv_city_surveillance",
+      "title": "City-Wide Pattern Analysis",
+      "timestamp": "2025-07-29T16:20:00Z",
+      "messages": [
+        {
+          "messageId": "msg_financial_district",
+          "summary": "Unusual activity in Financial District",
+          "timestamp": "2025-07-29T16:20:00Z",
+          "locations": [
+            {
+              "id": "bank_1",
+              "coordinates": [-0.0932, 51.5151],
+              "label": "Bank Junction",
+              "context": "ATM surveillance footage anomaly",
+              "timestamp": "2025-07-29T12:00:00Z"
+            },
+            {
+              "id": "bank_2",
+              "coordinates": [-0.0925, 51.5145],
+              "label": "King William Street",
+              "context": "Suspicious loitering behavior",
+              "timestamp": "2025-07-29T12:15:00Z"
+            }
+          ]
+        },
+        {
+          "messageId": "msg_west_end",
+          "summary": "Entertainment district incidents",
+          "timestamp": "2025-07-29T17:30:00Z",
+          "locations": [
+            {
+              "id": "west_end_1",
+              "coordinates": [-0.1419, 51.5110],
+              "label": "Piccadilly Circus",
+              "context": "Crowd disturbance reported",
+              "timestamp": "2025-07-29T21:30:00Z"
+            },
+            {
+              "id": "west_end_2",
+              "coordinates": [-0.1421, 51.5108],
+              "label": "Leicester Square",
+              "context": "Street performance gone wrong",
+              "timestamp": "2025-07-29T21:45:00Z"
+            },
+            {
+              "id": "west_end_3",
+              "coordinates": [-0.1417, 51.5112],
+              "label": "Regent Street",
+              "context": "Traffic disruption incident",
+              "timestamp": "2025-07-29T22:00:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conversationId": "conv_transport_hubs",
+      "title": "Transport Hub Security Review",
+      "timestamp": "2025-07-28T09:45:00Z",
+      "messages": [
+        {
+          "messageId": "msg_kings_cross",
+          "summary": "Kings Cross Station security alerts",
+          "timestamp": "2025-07-28T09:45:00Z",
+          "locations": [
+            {
+              "id": "kings_cross_1",
+              "coordinates": [-0.1247, 51.5308],
+              "label": "Kings Cross Main Concourse",
+              "context": "Unattended bag alert resolved",
+              "timestamp": "2025-07-28T08:30:00Z"
+            },
+            {
+              "id": "kings_cross_2",
+              "coordinates": [-0.1245, 51.5310],
+              "label": "Platform 9 Access",
+              "context": "Barrier jumping incident",
+              "timestamp": "2025-07-28T08:45:00Z"
+            },
+            {
+              "id": "kings_cross_3",
+              "coordinates": [-0.1249, 51.5306],
+              "label": "Station Car Park",
+              "context": "Vehicle inspection checkpoint",
+              "timestamp": "2025-07-28T09:00:00Z"
+            }
+          ]
+        },
+        {
+          "messageId": "msg_heathrow_connection",
+          "summary": "Airport connection route monitoring",
+          "timestamp": "2025-07-28T11:15:00Z",
+          "locations": [
+            {
+              "id": "heathrow_1",
+              "coordinates": [-0.4543, 51.4700],
+              "label": "Heathrow Terminal 5",
+              "context": "Customs alert - resolved",
+              "timestamp": "2025-07-28T10:00:00Z"
+            },
+            {
+              "id": "heathrow_2",
+              "coordinates": [-0.4541, 51.4702],
+              "label": "Express Platform",
+              "context": "Passenger screening delay",
+              "timestamp": "2025-07-28T10:30:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conversationId": "conv_dense_cluster_test",
+      "title": "Dense Area Activity Test",
+      "timestamp": "2025-07-27T13:20:00Z",
+      "messages": [
+        {
+          "messageId": "msg_covent_garden",
+          "summary": "High-density event cluster in Covent Garden",
+          "timestamp": "2025-07-27T13:20:00Z",
+          "locations": [
+            {
+              "id": "dense_1",
+              "coordinates": [-0.1236, 51.5118],
+              "label": "Covent Garden Market",
+              "context": "Street performer gathering",
+              "timestamp": "2025-07-27T12:00:00Z"
+            },
+            {
+              "id": "dense_2",
+              "coordinates": [-0.1238, 51.5120],
+              "label": "Royal Opera House",
+              "context": "VIP arrival protocols",
+              "timestamp": "2025-07-27T12:05:00Z"
+            },
+            {
+              "id": "dense_3",
+              "coordinates": [-0.1234, 51.5116],
+              "label": "Long Acre Junction",
+              "context": "Traffic management issue",
+              "timestamp": "2025-07-27T12:10:00Z"
+            },
+            {
+              "id": "dense_4",
+              "coordinates": [-0.1240, 51.5122],
+              "label": "Neal Street",
+              "context": "Shop evacuation drill",
+              "timestamp": "2025-07-27T12:15:00Z"
+            },
+            {
+              "id": "dense_5",
+              "coordinates": [-0.1232, 51.5114],
+              "label": "Strand Approach",
+              "context": "Bus route diversion",
+              "timestamp": "2025-07-27T12:20:00Z"
+            },
+            {
+              "id": "dense_6",
+              "coordinates": [-0.1242, 51.5124],
+              "label": "Seven Dials",
+              "context": "Street cleaning operation",
+              "timestamp": "2025-07-27T12:25:00Z"
+            },
+            {
+              "id": "dense_7",
+              "coordinates": [-0.1230, 51.5112],
+              "label": "Somerset House",
+              "context": "Exhibition setup activity",
+              "timestamp": "2025-07-27T12:30:00Z"
+            },
+            {
+              "id": "dense_8",
+              "coordinates": [-0.1244, 51.5126],
+              "label": "Monmouth Street",
+              "context": "Delivery truck coordination",
+              "timestamp": "2025-07-27T12:35:00Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "conversationId": "conv_international_tracking",
+      "title": "International Movement Tracking",
+      "timestamp": "2025-07-26T14:50:00Z",
+      "messages": [
+        {
+          "messageId": "msg_europe_connections",
+          "summary": "Cross-border movement patterns detected",
+          "timestamp": "2025-07-26T14:50:00Z",
+          "locations": [
+            {
+              "id": "paris_1",
+              "coordinates": [2.3522, 48.8566],
+              "label": "Louvre District",
+              "context": "International coordination meeting",
+              "timestamp": "2025-07-26T10:00:00Z"
+            },
+            {
+              "id": "paris_2",
+              "coordinates": [2.3520, 48.8564],
+              "label": "Tuileries Garden",
+              "context": "Surveillance handoff point",
+              "timestamp": "2025-07-26T10:30:00Z"
+            },
+            {
+              "id": "amsterdam_1",
+              "coordinates": [4.9041, 52.3676],
+              "label": "Central Station Amsterdam",
+              "context": "Transit hub monitoring",
+              "timestamp": "2025-07-26T14:00:00Z"
+            },
+            {
+              "id": "berlin_1",
+              "coordinates": [13.4050, 52.5200],
+              "label": "Brandenburg Gate",
+              "context": "Tourist cover operation",
+              "timestamp": "2025-07-26T16:00:00Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "total_conversations": 6,
+    "total_messages": 10,
+    "total_locations": 31,
+    "date_range": {
+      "start": "2025-07-26T10:00:00Z",
+      "end": "2025-07-31T15:45:00Z"
+    },
+    "geographic_coverage": {
+      "primary_city": "London, UK",
+      "secondary_locations": ["Paris, France", "Amsterdam, Netherlands", "Berlin, Germany"],
+      "bounding_box": {
+        "west": -0.4543,
+        "east": 13.4050,
+        "south": 48.8564,
+        "north": 52.5200
+      }
+    },
+    "clustering_test_scenarios": {
+      "dense_cluster": "Covent Garden - 8 points within ~200m radius",
+      "warehouse_investigation": "3 closely spaced suspicious activities",
+      "gang_territory": "4 coordinated meeting points",
+      "transport_hubs": "Multi-location security monitoring"
+    }
+  }
+}
