@@ -86,7 +86,7 @@ export default function TriangleDrawingTool({
     } else {
       setDrawingState('drawing');
     }
-  }, [isDrawing, drawingState, vertices, clickCount, existingTrianglesCount, resetDrawing, onCancel]);
+  }, [isDrawing, drawingState, vertices, clickCount, existingTrianglesCount, resetDrawing, onCancel, onDrawingProgress]);
 
   // Add/remove click listener when drawing state changes
   useEffect(() => {
