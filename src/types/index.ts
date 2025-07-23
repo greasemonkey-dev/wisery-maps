@@ -23,8 +23,25 @@ export interface MessageGroup {
   timestamp: Date;
 }
 
+export interface Circle {
+  id: string;
+  name: string;
+  center: [number, number]; // [lng, lat]
+  radius: number; // in meters
+  userId: string;
+  color: string;
+  createdAt: Date;
+}
+
 export interface TriangleValidationResult {
   valid: boolean;
   error?: string;
+  area?: number;
+}
+
+export interface CircleValidationResult {
+  valid: boolean;
+  error?: string;
+  radius?: number;
   area?: number;
 }

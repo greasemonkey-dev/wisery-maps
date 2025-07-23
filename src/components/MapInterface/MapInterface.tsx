@@ -4,11 +4,13 @@ import MapCanvas from '../MapCanvas';
 import LocationPanel from '../LocationPanel';
 import PointsLayer from '../PointsLayer';
 import TrianglesLayer from '../TrianglesLayer';
+import CirclesLayer from '../CirclesLayer';
 import LocationPopup from '../LocationPopup';
 import TriangleDrawingTool from '../TriangleDrawingTool';
+import CircleDrawingTool from '../CircleDrawingTool';
 import DrawingPreviewLayer from '../DrawingPreviewLayer';
 import { getAllLocationsAsMapPoints } from '../../utils/mockDataLoader';
-import type { MapPoint, Triangle } from '../../types';
+import type { MapPoint, Triangle, Circle } from '../../types';
 import './MapInterface.css';
 
 const INITIAL_VIEW_STATE: ViewState = {
@@ -24,8 +26,12 @@ export default function MapInterface() {
   const [viewState, setViewState] = useState<ViewState>(INITIAL_VIEW_STATE);
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
   const [isDrawingTriangle, setIsDrawingTriangle] = useState(false);
+  const [isDrawingCircle, setIsDrawingCircle] = useState(false);
   const [triangles, setTriangles] = useState<Triangle[]>([]);
+  const [circles, setCircles] = useState<Circle[]>([]);
   const [drawingVertices, setDrawingVertices] = useState<[number, number][]>([]);
+  const [circleCenter, setCircleCenter] = useState<[number, number] | null>(null);
+  const [circleRadius, setCircleRadius] = useState(0);
   const [mapRef, setMapRef] = useState<MapRef | null>(null);
 
   // Load mock data
@@ -36,12 +42,12 @@ export default function MapInterface() {
   }, []);
 
   const handlePointClick = useCallback((point: MapPoint) => {
-    // Don't handle point clicks during triangle drawing
-    if (isDrawingTriangle) return;
+    // Don't handle point clicks during drawing
+    if (isDrawingTriangle || isDrawingCircle) return;
     
     console.log('Point clicked:', point);
     setSelectedPoint(point);
-  }, [isDrawingTriangle]);
+  }, [isDrawingTriangle, isDrawingCircle]);
 
   const handleLocationClick = useCallback((location: MapPoint) => {
     console.log('Location clicked from panel:', location);
@@ -68,19 +74,39 @@ export default function MapInterface() {
     setIsDrawingTriangle(true);
   }, []);
 
+  const handleStartCircleDrawing = useCallback(() => {
+    setIsDrawingCircle(true);
+  }, []);
+
   const handleTriangleComplete = useCallback((triangle: Triangle) => {
     setTriangles(prev => [...prev, triangle]);
     setIsDrawingTriangle(false);
     console.log('Triangle saved:', triangle);
   }, []);
 
+  const handleCircleComplete = useCallback((circle: Circle) => {
+    setCircles(prev => [...prev, circle]);
+    setIsDrawingCircle(false);
+    setCircleCenter(null);
+    setCircleRadius(0);
+    console.log('Circle saved:', circle);
+  }, []);
+
   const handleCancelDrawing = useCallback(() => {
     setIsDrawingTriangle(false);
+    setIsDrawingCircle(false);
     setDrawingVertices([]);
+    setCircleCenter(null);
+    setCircleRadius(0);
   }, []);
 
   const handleDrawingProgress = useCallback((vertices: [number, number][]) => {
     setDrawingVertices(vertices);
+  }, []);
+
+  const handleCircleDrawingProgress = useCallback((center: [number, number] | null, radius: number) => {
+    setCircleCenter(center);
+    setCircleRadius(radius);
   }, []);
 
   const handleMapLoad = useCallback((map: MapRef) => {
@@ -94,17 +120,26 @@ export default function MapInterface() {
         onLocationClick={handleLocationClick}
         onLocationGroupToggle={handleLocationGroupToggle}
         onStartDrawing={handleStartDrawing}
+        onStartCircleDrawing={handleStartCircleDrawing}
         triangles={triangles}
+        circles={circles}
       />
       <div className="map-main">
         <MapCanvas viewState={viewState} onMove={handleMove} onMapLoad={handleMapLoad}>
           <TrianglesLayer triangles={triangles} />
-          <DrawingPreviewLayer vertices={drawingVertices} isDrawing={isDrawingTriangle} />
+          <CirclesLayer circles={circles} />
+          <DrawingPreviewLayer 
+            vertices={drawingVertices} 
+            isDrawing={isDrawingTriangle || isDrawingCircle}
+            circleCenter={circleCenter}
+            circleRadius={circleRadius}
+            isDrawingCircle={isDrawingCircle}
+          />
           <PointsLayer 
             points={allLocations} 
             onPointClick={handlePointClick}
             zoom={viewState.zoom}
-            isDrawingDisabled={isDrawingTriangle}
+            isDrawingDisabled={isDrawingTriangle || isDrawingCircle}
           />
           {selectedPoint && (
             <LocationPopup 
@@ -119,6 +154,14 @@ export default function MapInterface() {
           onCancel={handleCancelDrawing}
           onDrawingProgress={handleDrawingProgress}
           existingTrianglesCount={triangles.length}
+          mapRef={mapRef}
+        />
+        <CircleDrawingTool
+          isDrawing={isDrawingCircle}
+          onCircleComplete={handleCircleComplete}
+          onCancel={handleCancelDrawing}
+          onDrawingProgress={handleCircleDrawingProgress}
+          existingCirclesCount={circles.length}
           mapRef={mapRef}
         />
       </div>

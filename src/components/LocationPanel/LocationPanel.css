@@ -185,3 +185,58 @@
 .location-panel-content::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* Circles section styling */
+.circles-section {
+  border-top: 2px solid #e0e0e0;
+  padding: 16px;
+}
+
+.add-circle-btn {
+  background: none;
+  border: 1px solid #E74C3C;
+  color: #E74C3C;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-circle-btn:hover {
+  background: #E74C3C;
+  color: white;
+}
+
+.circle-items {
+  /* Circle items styling */
+}
+
+.circle-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.circle-item:hover {
+  background: #f0f8ff;
+  padding: 8px 8px;
+  margin: 0 -8px;
+  border-radius: 4px;
+}
+
+.circle-icon {
+  margin-right: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.circle-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.no-circles {
+  padding: 16px 8px;
+  text-align: center;
+}

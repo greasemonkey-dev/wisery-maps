@@ -6,7 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Status**: ✅ **PRODUCTION READY** - Core Phase 1 Complete  
 **Last Updated**: January 2025  
-**Development Stage**: Phase 2 (Basic Interaction) - 75% Complete  
+**Development Stage**: Phase 2A (Enhanced Drawing Tools) - Starting  
+**PRD Compliance**: ~25% (Core visualization complete, advanced features pending)  
 
 ### 📈 Key Metrics
 - **✅ 59/59 Unit Tests Passing** (Vitest)
@@ -26,40 +27,59 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Wisery Maps is a simplified mapping application focused on triangular area selection and location visualization from conversations. Key principles:
+Wisery Maps is a comprehensive mapping application for AI lab workflows, supporting full AOI/POI management, location-based querying, and team collaboration. **Current scope has expanded beyond initial triangle-only approach to meet full PRD requirements.**
 
-- **Simplicity First**: Designed for non-tech users with intuitive interactions
-- **Triangles Only**: No complex polygons or circles, only triangle drawing
-- **Extracted Locations Priority**: Primary focus on visualizing locations from conversations
-- **User Isolation**: No real-time sharing between users
-- **Moderate Scale**: Handle hundreds of locations efficiently
+### **🎯 PRD Compliance Goals**
+- **Full Drawing Tools**: Circles, polygons, triangles, and points with visual feedback
+- **CRUD Operations**: Complete layer/AOI/POI management with team-level storage
+- **Location Visualization**: Extracted locations from conversations with geocoding
+- **Query Integration**: Location-based queries sent to conversation agents
+- **Import/Export**: CSV/GeoJSON support for data interchange
+- **Collaboration**: Team management, permissions, and sharing capabilities
 
 ## Architecture & Tech Stack
 
 ### Frontend Stack
 - **react-map-gl**: Base mapping component with desktop-optimized interactions
-- **@mapbox/mapbox-gl-draw**: Triangle creation (simplified to 3-click triangles)
-- **turf.js**: Area calculations, point clustering, distance measurements
+- **@mapbox/mapbox-gl-draw**: Enhanced drawing tools (triangles, polygons, circles)
+- **@mapbox/mapbox-gl-draw-circle**: Circle creation functionality  
+- **@turf/turf**: Spatial analysis, area calculations, distance measurements
 - **supercluster**: Point clustering for location density management
-- **State Management**: React useState/useContext (no complex store needed)
+- **zustand**: Global state management for layers, AOIs, POIs
+- **papaparse**: CSV import/export functionality
+- **geojson-utils**: GeoJSON validation and processing
 
-### Core Components Structure
+### Enhanced Components Structure (PRD Compliant)
 ```
 src/
 ├── components/
-│   ├── MapInterface/           # Main container
+│   ├── MapInterface/           # Main container with toolbar
 │   ├── MapCanvas/             # Main map rendering
 │   ├── LocationPanel/         # Left sidebar with extracted locations
-│   ├── SimpleToolbar/         # Top toolbar with drawing tools
-│   ├── QueryBuilder/          # Bottom query interface
+│   ├── DrawingTools/          # Enhanced drawing toolbar
+│   │   ├── TriangleDrawingTool/   # Triangle creation (existing)
+│   │   ├── CircleDrawingTool/     # Circle creation (new)
+│   │   ├── PolygonDrawingTool/    # N-sided polygon creation (new)
+│   │   └── POICreationTool/       # Point creation (enhanced)
+│   ├── QueryBuilder/          # Location-based query interface
+│   ├── LayerManager/          # Layer CRUD operations
+│   ├── ShapeEditor/           # Post-creation shape editing
+│   ├── ImportExport/          # CSV/GeoJSON handling
 │   ├── ExtractedLocationsTree/ # Hierarchical location list
-│   ├── TriangleDrawingTool/   # 3-click triangle creation
 │   ├── LocationPopup/         # Location info display
-│   └── SimpleQueryInterface/  # Basic query builder
+│   └── TeamManagement/       # Collaboration features
+├── stores/
+│   ├── layersStore.ts         # Layer management state
+│   ├── aoisStore.ts          # AOI management state  
+│   ├── poisStore.ts          # POI management state
+│   └── uiStore.ts            # UI state management
 ├── utils/
-│   ├── triangleValidation.js  # Area validation and constraints
-│   ├── pointClustering.js     # Supercluster configuration
-│   └── colorAssignment.js     # Triangle color management
+│   ├── triangleValidation.ts  # Area validation and constraints
+│   ├── pointClustering.ts     # Supercluster configuration
+│   ├── colorAssignment.ts     # Shape color management
+│   ├── geoJsonUtils.ts       # GeoJSON processing
+│   ├── csvUtils.ts           # CSV import/export
+│   └── queryBuilder.ts       # Query construction
 └── types/
     └── index.ts              # TypeScript definitions
 ```
@@ -173,7 +193,7 @@ DELETE /api/triangles/{id}              // Delete triangle
 POST /api/queries/location-based        // Submit location-based queries
 ```
 
-## Implementation Status
+## 📋 PRD Compliance Implementation Roadmap
 
 ### ✅ Phase 1: Core Visualization (COMPLETED)
 - [x] Basic map rendering with react-map-gl (MapLibre)
@@ -182,18 +202,151 @@ POST /api/queries/location-based        // Submit location-based queries
 - [x] Click for location info popup
 - [x] Simple triangle drawing (3 clicks)
 - [x] Triangle validation and auto-discard
-
-### 🔄 Phase 2: Basic Interaction (IN PROGRESS)
 - [x] Save/name triangles with color assignment
 - [x] Toggle location groups visibility
-- [ ] Basic search within locations
-- [ ] Simple query interface
-
-### 📋 Phase 3: Polish (PLANNED)
 - [x] Error handling and user feedback
-- [x] Performance optimization for hundreds of points
-- [x] Desktop keyboard shortcuts (ESC, ENTER)
-- [ ] Right-click context menus
+- [x] Desktop keyboard shortcuts (ESC cancellation)
+
+### 🎯 Phase 2A: Enhanced Drawing Tools (2-3 weeks) - **NEXT PRIORITY**
+
+#### 2A.1 Circle Drawing Implementation
+- [ ] Install dependencies: `@mapbox/mapbox-gl-draw-circle`, `papaparse`, `geojson-utils`
+- [ ] Create `CircleDrawingTool` component
+- [ ] Implement center-point + radius circle creation
+- [ ] Add circle validation (minimum/maximum radius)
+- [ ] Integrate circle drawing into main toolbar
+- [ ] Add circle color assignment and styling
+
+#### 2A.2 Enhanced Polygon Drawing
+- [ ] Extend `TriangleDrawingTool` to support n-sided polygons
+- [ ] Add polygon completion logic (double-click or close shape)
+- [ ] Implement polygon validation (minimum area, self-intersection)
+- [ ] Add polygon editing handles (drag vertices)
+- [ ] Support polygon hole creation (advanced)
+
+#### 2A.3 Point/POI Creation Enhancement
+- [ ] Create dedicated `POICreationTool` component
+- [ ] Add drag-and-drop POI placement
+- [ ] Implement POI icons and customization
+- [ ] Add POI validation and snapping
+- [ ] Create POI editing interface
+
+#### 2A.4 Visual Feedback System
+- [ ] Add real-time drawing preview with dashed lines
+- [ ] Implement hover states for all drawing tools
+- [ ] Add drawing progress indicators
+- [ ] Create drawing instructions overlay
+- [ ] Add undo/redo functionality for drawing actions
+
+### 🔧 Phase 2B: CRUD Operations & Layer Management (2-3 weeks)
+
+#### 2B.1 Global State Management
+- [ ] Install and configure Zustand for state management
+- [ ] Create stores: `layersStore`, `aoisStore`, `poisStore`, `uiStore`
+- [ ] Implement state persistence (localStorage)
+- [ ] Add state hydration on app load
+
+#### 2B.2 AOI/POI CRUD Operations
+- [ ] Create `AOIManager` utility class
+- [ ] Implement Create operations (save drawn shapes)
+- [ ] Add Read operations (load existing shapes)
+- [ ] Build Update operations (edit shape properties)
+- [ ] Implement Delete operations with confirmation
+- [ ] Add bulk operations (select multiple, delete multiple)
+
+#### 2B.3 Layer Management System
+- [ ] Create `LayerManager` component
+- [ ] Implement layer creation/deletion
+- [ ] Add layer visibility toggles
+- [ ] Create layer reordering (drag-and-drop priority)
+- [ ] Implement layer grouping and nesting
+- [ ] Add layer metadata (name, description, created date)
+
+### 🔍 Phase 2C: Search & Query System (2-3 weeks)
+
+#### 2C.1 Search Bar Implementation
+- [ ] Create `MapSearchBar` component with autocomplete
+- [ ] Implement location name search with fuzzy matching
+- [ ] Add coordinate-based search (lat/lng input)
+- [ ] Create recent searches history
+- [ ] Add search result filtering and sorting
+
+#### 2C.2 Query Builder System
+- [ ] Create `QueryBuilder` component
+- [ ] Implement visual query construction (drag shapes to query)
+- [ ] Add spatial query types (within, intersects, contains)
+- [ ] Create query parameter validation
+- [ ] Build query preview and execution
+
+#### 2C.3 Agent Integration Interface
+- [ ] Create `AgentConnector` service
+- [ ] Implement query serialization for agent consumption
+- [ ] Add query result processing and display
+- [ ] Create conversation integration hooks
+- [ ] Build query history and rerun functionality
+
+### 📤 Phase 3A: Import/Export & Data Management (2-3 weeks)
+
+#### 3A.1 GeoJSON Support
+- [ ] Create `GeoJSONImporter` utility
+- [ ] Implement GeoJSON file parsing and validation
+- [ ] Add GeoJSON export functionality
+- [ ] Support FeatureCollection and individual features
+- [ ] Handle coordinate system transformations
+
+#### 3A.2 CSV Support
+- [ ] Create `CSVImporter` utility using papaparse
+- [ ] Implement CSV to POI conversion
+- [ ] Add CSV export with custom field mapping
+- [ ] Support bulk POI import/export
+- [ ] Add data validation and error handling
+
+### 🎨 Phase 3B: Styling & Customization (1-2 weeks)
+
+#### 3B.1 Shape Styling System
+- [ ] Create `StyleManager` utility
+- [ ] Implement color picker components
+- [ ] Add shape outline/fill customization
+- [ ] Create icon library and selector
+- [ ] Support custom icon uploads
+
+#### 3B.2 Selection & Highlighting
+- [ ] Add shape selection with bounding boxes
+- [ ] Implement multi-select functionality
+- [ ] Create highlight animations and effects
+- [ ] Add selection-based bulk operations
+- [ ] Implement keyboard shortcuts for selection
+
+### 🤝 Phase 4: Collaboration & Advanced Features (3-4 weeks)
+
+#### 4.1 Team Management
+- [ ] Create user authentication integration
+- [ ] Implement team/workspace concept
+- [ ] Add user permissions system (view/edit/admin)
+- [ ] Create team member management UI
+
+#### 4.2 Sharing & Permissions
+- [ ] Implement layer sharing with permission levels
+- [ ] Add share link generation
+- [ ] Create collaborative editing controls
+- [ ] Add version history and conflict resolution
+
+### 📋 Phase 5: Polish & Production Ready (1-2 weeks)
+
+#### 5.1 Error Handling & Validation
+- [ ] Add comprehensive error boundaries
+- [ ] Implement user-friendly error messages
+- [ ] Create data validation throughout
+- [ ] Add loading states and progress indicators
+
+## ⏱️ Timeline Summary
+- **Phase 2A-2C**: 6-9 weeks (Enhanced drawing, CRUD, search/query)
+- **Phase 3A-3B**: 3-4 weeks (Import/export, styling)  
+- **Phase 4**: 3-4 weeks (Collaboration & advanced features)
+- **Phase 5**: 1-2 weeks (Polish & production)
+
+**Total Estimated Timeline**: 13-19 weeks for full PRD compliance  
+**Current Priority**: Phase 2A.1 - Circle Drawing Implementation
 
 ## Desktop-Only Optimizations
 
@@ -204,12 +357,27 @@ POST /api/queries/location-based        // Submit location-based queries
 
 ## Important Implementation Notes
 
-- **No Complex Polygons**: Only triangles are supported by design
+### **🔄 Scope Evolution**
+- **Original Scope**: Triangle-only drawing with basic visualization
+- **PRD Requirements**: Full drawing tools (circles, polygons, points) with comprehensive CRUD operations
+- **Current Approach**: Incremental enhancement while maintaining existing functionality
+
+### **🎯 Technical Guidelines**
 - **Desktop First**: No mobile responsiveness required
-- **User Isolation**: No real-time collaboration features
-- **Performance Target**: Handle hundreds of locations efficiently
-- **Error Prevention**: Auto-validate triangles, prevent tiny areas
-- **Color Consistency**: Use predefined color palette, cycle through colors
+- **Progressive Enhancement**: Build new features without breaking existing ones
+- **Performance Target**: Handle thousands of locations efficiently with virtualization
+- **Error Prevention**: Validate all shapes, prevent invalid geometries
+- **Color Consistency**: Expand color palette, support custom colors
+- **State Management**: Transition from local state to Zustand for complex operations
+- **Testing**: Maintain 100% test coverage using Playwright MCP for new features
+
+### **📐 Drawing Tool Standards**
+- **Triangles**: Maintain existing 3-click workflow
+- **Circles**: Center-point + radius approach with live preview
+- **Polygons**: Click-to-add vertices, double-click or close to complete
+- **Points**: Single-click placement with drag-to-position
+- **Visual Feedback**: Real-time preview for all drawing operations
+- **Validation**: Minimum/maximum size constraints for all shapes
 
 ## Testing Strategy & Results
 
