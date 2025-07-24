@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 🚀 Current Project Status
 
-**Status**: ✅ **PRODUCTION READY** - Core Phase 1 Complete  
+**Status**: ✅ **PRODUCTION READY** - Core Phase 1 + Phase 2A.1 Complete  
 **Last Updated**: January 2025  
-**Development Stage**: Phase 2A (Enhanced Drawing Tools) - Starting  
-**PRD Compliance**: ~25% (Core visualization complete, advanced features pending)  
+**Development Stage**: Phase 2A (Enhanced Drawing Tools) - Circle Drawing Complete, Polygons Next  
+**PRD Compliance**: ~35% (Core visualization + circle drawing complete, advanced features pending)  
 
 ### 📈 Key Metrics
 - **✅ 59/59 Unit Tests Passing** (Vitest)
@@ -21,7 +21,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 31 realistic mock locations across 6 conversations
 - Point clustering with supercluster (2-11 points per cluster)
 - Triangle drawing system with 3-click workflow
-- Location panel with hierarchical organization
+- **Circle drawing system with 2-click workflow (center + radius point)**
+- **Circle validation with 10m-50km distance constraints**
+- **Circle color cycling matching triangle system**
+- Location panel with hierarchical organization including "○ My Circles" section
 - Interactive popups with detailed location info
 - Visibility toggles and keyboard shortcuts (ESC cancellation)
 
@@ -106,6 +109,16 @@ interface Triangle {
   createdAt: Date;
 }
 
+interface Circle {
+  id: string;
+  name: string;
+  center: [number, number]; // [lng, lat]
+  radius: number; // radius in meters
+  userId: string;
+  color: string;
+  createdAt: Date;
+}
+
 interface MessageGroup {
   messageId: string;
   summary: string;
@@ -124,13 +137,21 @@ interface MessageGroup {
 - **User Feedback**: "Triangle too small - please draw a larger area"
 
 ### Color System
-Predefined triangle colors (cycle through in order):
+Predefined shape colors (cycle through in order for both triangles and circles):
 1. `#4CBACB` (Teal) - Default
 2. `#E74C3C` (Red)
 3. `#F39C12` (Orange) 
 4. `#27AE60` (Green)
 5. `#8E44AD` (Purple)
 6. `#3498DB` (Blue)
+
+### Circle Creation & Validation
+- **2-Click Flow**: Click center point → drag to set radius → click to confirm → save/discard popup
+- **Distance Constraints**: 10m minimum to 50km maximum radius using Haversine formula
+- **Real-time Preview**: Dashed circle outline shows during radius selection
+- **Validation Logic**: `distance = 2 * R * asin(sqrt(sin²(Δφ/2) + cos φ₁ ⋅ cos φ₂ ⋅ sin²(Δλ/2)))`
+- **Auto-discard**: Circles outside constraints are automatically cancelled
+- **User Feedback**: "Circle too small/large - radius must be between 10m and 50km"
 
 ### Location Clustering Rules
 - **Clustering Threshold**: Multiple points within 50m radius
@@ -190,6 +211,9 @@ GET /api/conversations/{id}/locations    // Retrieve extracted locations
 POST /api/user/triangles                // Save user triangles
 GET /api/user/triangles                 // Get user triangles
 DELETE /api/triangles/{id}              // Delete triangle
+POST /api/user/circles                  // Save user circles
+GET /api/user/circles                   // Get user circles
+DELETE /api/circles/{id}                // Delete circle
 POST /api/queries/location-based        // Submit location-based queries
 ```
 
@@ -209,13 +233,15 @@ POST /api/queries/location-based        // Submit location-based queries
 
 ### 🎯 Phase 2A: Enhanced Drawing Tools (2-3 weeks) - **NEXT PRIORITY**
 
-#### 2A.1 Circle Drawing Implementation
-- [ ] Install dependencies: `@mapbox/mapbox-gl-draw-circle`, `papaparse`, `geojson-utils`
-- [ ] Create `CircleDrawingTool` component
-- [ ] Implement center-point + radius circle creation
-- [ ] Add circle validation (minimum/maximum radius)
-- [ ] Integrate circle drawing into main toolbar
-- [ ] Add circle color assignment and styling
+#### 2A.1 Circle Drawing Implementation ✅ **COMPLETED**
+- [x] Install dependencies: `@mapbox/mapbox-gl-draw-circle`, `papaparse`, `geojson-utils`
+- [x] Create `CircleDrawingTool` component with 2-click workflow
+- [x] Implement center-point + radius circle creation with real-time preview
+- [x] Add circle validation (10m-50km radius with Haversine distance calculation)
+- [x] Integrate circle drawing into main toolbar and LocationPanel
+- [x] Add circle color assignment and styling (cycling through 6 predefined colors)
+- [x] **Bonus**: CirclesLayer with GeoJSON polygon approximation for rendering
+- [x] **Bonus**: Comprehensive test suite (23 tests covering validation, colors, distances)
 
 #### 2A.2 Enhanced Polygon Drawing
 - [ ] Extend `TriangleDrawingTool` to support n-sided polygons
@@ -346,7 +372,7 @@ POST /api/queries/location-based        // Submit location-based queries
 - **Phase 5**: 1-2 weeks (Polish & production)
 
 **Total Estimated Timeline**: 13-19 weeks for full PRD compliance  
-**Current Priority**: Phase 2A.1 - Circle Drawing Implementation
+**Current Priority**: Phase 2A.2 - Enhanced Polygon Drawing (N-sided shapes)
 
 ## Desktop-Only Optimizations
 
@@ -372,12 +398,12 @@ POST /api/queries/location-based        // Submit location-based queries
 - **Testing**: Maintain 100% test coverage using Playwright MCP for new features
 
 ### **📐 Drawing Tool Standards**
-- **Triangles**: Maintain existing 3-click workflow
-- **Circles**: Center-point + radius approach with live preview
-- **Polygons**: Click-to-add vertices, double-click or close to complete
+- **Triangles**: Maintain existing 3-click workflow ✅ **Implemented**
+- **Circles**: Center-point + radius approach with live preview ✅ **Implemented**
+- **Polygons**: Click-to-add vertices, double-click or close to complete 🎯 **Next**
 - **Points**: Single-click placement with drag-to-position
-- **Visual Feedback**: Real-time preview for all drawing operations
-- **Validation**: Minimum/maximum size constraints for all shapes
+- **Visual Feedback**: Real-time preview for all drawing operations ✅ **Circles Complete**
+- **Validation**: Minimum/maximum size constraints for all shapes ✅ **Circles Complete**
 
 ## Testing Strategy & Results
 
