@@ -8,6 +8,8 @@ interface DrawingPreviewLayerProps {
   circleCenter?: [number, number] | null;
   circleRadius?: number;
   isDrawingCircle?: boolean;
+  // Polygon preview props
+  isDrawingPolygon?: boolean;
 }
 
 /**
@@ -35,7 +37,8 @@ export default function DrawingPreviewLayer({
   isDrawing, 
   circleCenter, 
   circleRadius = 0, 
-  isDrawingCircle = false 
+  isDrawingCircle = false,
+  isDrawingPolygon = false
 }: DrawingPreviewLayerProps) {
   const previewGeoJSON = useMemo(() => {
     if (!isDrawing || (vertices.length === 0 && !isDrawingCircle)) {
@@ -74,7 +77,7 @@ export default function DrawingPreviewLayer({
       });
     }
 
-    // Handle triangle preview (existing logic)
+    // Handle triangle/polygon preview
     if (!isDrawingCircle && vertices.length > 0) {
       // Add vertex points
       vertices.forEach((vertex, index) => {
@@ -87,6 +90,7 @@ export default function DrawingPreviewLayer({
           properties: {
             type: 'vertex',
             index,
+            isFirst: index === 0 && isDrawingPolygon && vertices.length >= 3
           },
         });
       });
@@ -105,8 +109,9 @@ export default function DrawingPreviewLayer({
         });
       }
 
-      // Add triangle fill when we have 3 vertices
-      if (vertices.length === 3) {
+      // Add polygon fill for triangles (3 vertices) OR completed polygons
+      if (vertices.length === 3 && !isDrawingPolygon) {
+        // Triangle mode - auto-close with 3 vertices
         features.push({
           type: 'Feature' as const,
           geometry: {
@@ -117,6 +122,18 @@ export default function DrawingPreviewLayer({
             type: 'triangle',
           },
         });
+      } else if (isDrawingPolygon && vertices.length >= 3) {
+        // Polygon mode - show fill preview for 3+ vertices
+        features.push({
+          type: 'Feature' as const,
+          geometry: {
+            type: 'Polygon' as const,
+            coordinates: [[...vertices, vertices[0]]], // Close the polygon
+          },
+          properties: {
+            type: 'polygon',
+          },
+        });
       }
     }
 
@@ -124,7 +141,7 @@ export default function DrawingPreviewLayer({
       type: 'FeatureCollection' as const,
       features,
     };
-  }, [vertices, isDrawing, isDrawingCircle, circleCenter, circleRadius]);
+  }, [vertices, isDrawing, isDrawingCircle, circleCenter, circleRadius, isDrawingPolygon]);
 
   if (!isDrawing || (vertices.length === 0 && !isDrawingCircle)) {
     return null;
@@ -134,13 +151,24 @@ export default function DrawingPreviewLayer({
     <Source id="drawing-preview" type="geojson" data={previewGeoJSON}>
       {/* Triangle fill (only when complete) */}
       <Layer
-        id="drawing-preview-fill"
+        id="drawing-preview-triangle-fill"
         type="fill"
         paint={{
           'fill-color': '#4CBACB',
           'fill-opacity': 0.2,
         }}
         filter={['==', ['get', 'type'], 'triangle']}
+      />
+
+      {/* Polygon fill preview */}
+      <Layer
+        id="drawing-preview-polygon-fill"
+        type="fill"
+        paint={{
+          'fill-color': '#4CBACB',
+          'fill-opacity': 0.15,
+        }}
+        filter={['==', ['get', 'type'], 'polygon']}
       />
       
       {/* Lines between vertices */}
@@ -156,7 +184,7 @@ export default function DrawingPreviewLayer({
         filter={['==', ['get', 'type'], 'edge']}
       />
       
-      {/* Vertex points */}
+      {/* Regular vertex points */}
       <Layer
         id="drawing-preview-vertices"
         type="circle"
@@ -166,7 +194,20 @@ export default function DrawingPreviewLayer({
           'circle-stroke-color': 'white',
           'circle-stroke-width': 2,
         }}
-        filter={['==', ['get', 'type'], 'vertex']}
+        filter={['all', ['==', ['get', 'type'], 'vertex'], ['!=', ['get', 'isFirst'], true]]}
+      />
+
+      {/* First vertex highlight (for polygon closing) */}
+      <Layer
+        id="drawing-preview-first-vertex"
+        type="circle"
+        paint={{
+          'circle-color': '#27AE60',
+          'circle-radius': 8,
+          'circle-stroke-color': 'white',
+          'circle-stroke-width': 3,
+        }}
+        filter={['all', ['==', ['get', 'type'], 'vertex'], ['==', ['get', 'isFirst'], true]]}
       />
       
       {/* Circle preview fill */}

@@ -5,12 +5,15 @@ import LocationPanel from '../LocationPanel';
 import PointsLayer from '../PointsLayer';
 import TrianglesLayer from '../TrianglesLayer';
 import CirclesLayer from '../CirclesLayer';
+import PolygonsLayer from '../PolygonsLayer';
 import LocationPopup from '../LocationPopup';
+import AOIDetailsPanel from '../AOIDetailsPanel';
 import TriangleDrawingTool from '../TriangleDrawingTool';
 import CircleDrawingTool from '../CircleDrawingTool';
+import PolygonDrawingTool from '../PolygonDrawingTool';
 import DrawingPreviewLayer from '../DrawingPreviewLayer';
 import { getAllLocationsAsMapPoints } from '../../utils/mockDataLoader';
-import type { MapPoint, Triangle, Circle } from '../../types';
+import type { MapPoint, Triangle, Circle, Polygon, AOIAnalysis } from '../../types';
 import './MapInterface.css';
 
 const INITIAL_VIEW_STATE: ViewState = {
@@ -25,10 +28,13 @@ const INITIAL_VIEW_STATE: ViewState = {
 export default function MapInterface() {
   const [viewState, setViewState] = useState<ViewState>(INITIAL_VIEW_STATE);
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
+  const [selectedAOI, setSelectedAOI] = useState<AOIAnalysis | null>(null);
   const [isDrawingTriangle, setIsDrawingTriangle] = useState(false);
   const [isDrawingCircle, setIsDrawingCircle] = useState(false);
+  const [isDrawingPolygon, setIsDrawingPolygon] = useState(false);
   const [triangles, setTriangles] = useState<Triangle[]>([]);
   const [circles, setCircles] = useState<Circle[]>([]);
+  const [polygons, setPolygons] = useState<Polygon[]>([]);
   const [drawingVertices, setDrawingVertices] = useState<[number, number][]>([]);
   const [circleCenter, setCircleCenter] = useState<[number, number] | null>(null);
   const [circleRadius, setCircleRadius] = useState(0);
@@ -43,11 +49,11 @@ export default function MapInterface() {
 
   const handlePointClick = useCallback((point: MapPoint) => {
     // Don't handle point clicks during drawing
-    if (isDrawingTriangle || isDrawingCircle) return;
+    if (isDrawingTriangle || isDrawingCircle || isDrawingPolygon) return;
     
     console.log('Point clicked:', point);
     setSelectedPoint(point);
-  }, [isDrawingTriangle, isDrawingCircle]);
+  }, [isDrawingTriangle, isDrawingCircle, isDrawingPolygon]);
 
   const handleLocationClick = useCallback((location: MapPoint) => {
     console.log('Location clicked from panel:', location);
@@ -65,6 +71,14 @@ export default function MapInterface() {
     setSelectedPoint(null);
   }, []);
 
+  const handleAOIClick = useCallback((aoiAnalysis: AOIAnalysis) => {
+    setSelectedAOI(aoiAnalysis);
+  }, []);
+
+  const handleAOIDetailsClose = useCallback(() => {
+    setSelectedAOI(null);
+  }, []);
+
   const handleLocationGroupToggle = useCallback((messageId: string, visible: boolean) => {
     console.log('Group toggled:', messageId, visible);
     // TODO: Filter displayed points based on visibility
@@ -76,6 +90,10 @@ export default function MapInterface() {
 
   const handleStartCircleDrawing = useCallback(() => {
     setIsDrawingCircle(true);
+  }, []);
+
+  const handleStartPolygonDrawing = useCallback(() => {
+    setIsDrawingPolygon(true);
   }, []);
 
   const handleTriangleComplete = useCallback((triangle: Triangle) => {
@@ -92,9 +110,17 @@ export default function MapInterface() {
     console.log('Circle saved:', circle);
   }, []);
 
+  const handlePolygonComplete = useCallback((polygon: Polygon) => {
+    setPolygons(prev => [...prev, polygon]);
+    setIsDrawingPolygon(false);
+    setDrawingVertices([]);
+    console.log('Polygon saved:', polygon);
+  }, []);
+
   const handleCancelDrawing = useCallback(() => {
     setIsDrawingTriangle(false);
     setIsDrawingCircle(false);
+    setIsDrawingPolygon(false);
     setDrawingVertices([]);
     setCircleCenter(null);
     setCircleRadius(0);
@@ -121,25 +147,30 @@ export default function MapInterface() {
         onLocationGroupToggle={handleLocationGroupToggle}
         onStartDrawing={handleStartDrawing}
         onStartCircleDrawing={handleStartCircleDrawing}
+        onStartPolygonDrawing={handleStartPolygonDrawing}
+        onAOIClick={handleAOIClick}
         triangles={triangles}
         circles={circles}
+        polygons={polygons}
       />
       <div className="map-main">
         <MapCanvas viewState={viewState} onMove={handleMove} onMapLoad={handleMapLoad}>
           <TrianglesLayer triangles={triangles} />
           <CirclesLayer circles={circles} />
+          <PolygonsLayer polygons={polygons} />
           <DrawingPreviewLayer 
             vertices={drawingVertices} 
-            isDrawing={isDrawingTriangle || isDrawingCircle}
+            isDrawing={isDrawingTriangle || isDrawingCircle || isDrawingPolygon}
             circleCenter={circleCenter}
             circleRadius={circleRadius}
             isDrawingCircle={isDrawingCircle}
+            isDrawingPolygon={isDrawingPolygon}
           />
           <PointsLayer 
             points={allLocations} 
             onPointClick={handlePointClick}
             zoom={viewState.zoom}
-            isDrawingDisabled={isDrawingTriangle || isDrawingCircle}
+            isDrawingDisabled={isDrawingTriangle || isDrawingCircle || isDrawingPolygon}
           />
           {selectedPoint && (
             <LocationPopup 
@@ -164,6 +195,23 @@ export default function MapInterface() {
           existingCirclesCount={circles.length}
           mapRef={mapRef}
         />
+        <PolygonDrawingTool
+          isDrawing={isDrawingPolygon}
+          onPolygonComplete={handlePolygonComplete}
+          onCancel={handleCancelDrawing}
+          onDrawingProgress={handleDrawingProgress}
+          existingPolygonsCount={polygons.length}
+          mapRef={mapRef}
+        />
+        
+        {/* AOI Details Panel */}
+        {selectedAOI && (
+          <AOIDetailsPanel
+            aoiAnalysis={selectedAOI}
+            onClose={handleAOIDetailsClose}
+            onLocationClick={handleLocationClick}
+          />
+        )}
       </div>
     </div>
   );
