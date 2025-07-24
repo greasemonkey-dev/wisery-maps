@@ -45,3 +45,38 @@ export interface CircleValidationResult {
   radius?: number;
   area?: number;
 }
+
+export interface Polygon {
+  id: string;
+  name: string;
+  vertices: [number, number][]; // Array of [lng, lat] coordinates
+  userId: string;
+  color: string;
+  createdAt: Date;
+}
+
+export interface PolygonValidationResult {
+  valid: boolean;
+  error?: string;
+  area?: number;
+  selfIntersects?: boolean;
+}
+
+export interface AOIAnalysis {
+  id: string;
+  name: string;
+  type: 'triangle' | 'circle' | 'polygon';
+  color: string;
+  createdAt: Date;
+  containedLocations: MapPoint[];
+  locationCount: number;
+}
+
+export interface SpatialAnalysisSummary {
+  totalAOIs: number;
+  totalLocations: number;
+  emptyAOIs: number;
+  nonEmptyAOIs: number;
+  averageLocationsPerAOI: number;
+  mostPopulatedAOI: AOIAnalysis | null;
+}

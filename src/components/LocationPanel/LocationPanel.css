@@ -150,11 +150,25 @@
   margin-right: 8px;
   font-size: 16px;
   font-weight: bold;
+  min-width: 20px;
+}
+
+.aoi-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .triangle-name {
   font-size: 14px;
   color: #333;
+  margin-bottom: 2px;
+}
+
+.location-count {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
 }
 
 .no-triangles {
@@ -229,14 +243,92 @@
   margin-right: 8px;
   font-size: 16px;
   font-weight: bold;
+  min-width: 20px;
 }
 
 .circle-name {
   font-size: 14px;
   color: #333;
+  margin-bottom: 2px;
 }
 
 .no-circles {
+  padding: 16px 8px;
+  text-align: center;
+}
+
+/* Polygons section styling */
+.polygons-section {
+  border-top: 2px solid #e0e0e0;
+  padding: 16px;
+}
+
+.add-polygon-btn {
+  background: none;
+  border: 1px solid #F39C12;
+  color: #F39C12;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-polygon-btn:hover {
+  background: #F39C12;
+  color: white;
+}
+
+.polygon-items {
+  /* Polygon items styling */
+}
+
+.polygon-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  cursor: pointer;
+}
+
+.polygon-item:hover {
+  background: #f0f8ff;
+  padding: 8px 8px;
+  margin: 0 -8px;
+  border-radius: 4px;
+}
+
+.polygon-icon {
+  margin-right: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  min-width: 20px;
+}
+
+.polygon-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.polygon-name {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.polygon-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.polygon-details {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+.no-polygons {
   padding: 16px 8px;
   text-align: center;
 }
