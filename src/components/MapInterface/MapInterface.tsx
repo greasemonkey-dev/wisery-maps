@@ -178,6 +178,7 @@ export default function MapInterface() {
             onPointClick={handlePointClick}
             zoom={viewState.zoom}
             isDrawingDisabled={isDrawingTriangle || isDrawingCircle || isDrawingPolygon}
+            map={mapRef}
           />
           {selectedPoint && (
             <LocationPopup 

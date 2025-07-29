@@ -13,17 +13,12 @@
     "test:run": "vitest run"
   },
   "dependencies": {
-    "@mapbox/mapbox-gl-draw": "^1.5.0",
     "@maptiler/sdk": "^3.6.1",
     "@turf/turf": "^7.2.0",
     "geojson-utils": "^1.1.0",
-    "mapbox-gl": "^3.13.0",
-    "mapbox-gl-draw-circle": "^1.1.2",
-    "maplibre-gl": "^5.6.1",
     "papaparse": "^5.5.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-map-gl": "^8.0.4",
     "supercluster": "^8.0.1"
   },
   "devDependencies": {
@@ -31,7 +26,6 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
-    "@types/mapbox-gl": "^3.4.1",
     "@types/papaparse": "^5.3.16",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",

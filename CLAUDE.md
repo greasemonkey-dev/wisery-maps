@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 🚀 Current Project Status
 
-**Status**: ✅ **PRODUCTION READY** - Phase 2A Enhanced Drawing Tools Complete  
+**Status**: ✅ **PRODUCTION READY** - MapTiler SDK Migration Complete  
 **Last Updated**: January 2025  
 **Development Stage**: Phase 2B (CRUD Operations & Layer Management) - Starting  
-**PRD Compliance**: ~45% (Core visualization + all drawing tools + spatial analysis complete)  
+**PRD Compliance**: ~50% (Core visualization + MapTiler migration + drawing tools + spatial analysis)  
 
 ### 📈 Key Metrics
 - **✅ 123/123 Unit Tests Passing** (Vitest) - 64 new tests added
@@ -17,9 +17,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **🌐 Live Demo**: http://localhost:5176
 
 ### 🎯 What's Working Now
-- Complete map interface with London-centered view
+- **MapTiler SDK Integration**: Professional mapping with MapTiler Cloud infrastructure
+- **Native Point Clustering**: Built-in MapTiler clustering with expansion zoom (2-11 points per cluster)
+- **Secure Configuration**: Environment variable-based API key management (.env file)
+- Complete map interface with London-centered view and MapTiler Streets style
 - 31 realistic mock locations across 6 conversations
-- Point clustering with supercluster (2-11 points per cluster)
 - **Triangle drawing system** with 3-click workflow and area validation
 - **Circle drawing system** with 2-click workflow and 10m-50km radius validation
 - **Polygon drawing system** with n-sided polygons, self-intersection detection
@@ -27,7 +29,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **AOI details panel** with contained locations and interaction
 - **Real-time location counting** for all AOI types in LocationPanel
 - Location panel with hierarchical organization and AOI sections
-- Interactive popups with detailed location info
+- Custom popup implementation with detailed location info
 - Visibility toggles and keyboard shortcuts (ESC cancellation)
 
 ## Project Overview
@@ -45,12 +47,10 @@ Wisery Maps is a comprehensive mapping application for AI lab workflows, support
 ## Architecture & Tech Stack
 
 ### Frontend Stack
-- **react-map-gl**: Base mapping component with desktop-optimized interactions
-- **@mapbox/mapbox-gl-draw**: Enhanced drawing tools (triangles, polygons, circles)
-- **@mapbox/mapbox-gl-draw-circle**: Circle creation functionality  
+- **@maptiler/sdk**: Professional mapping infrastructure with MapTiler Cloud
 - **@turf/turf**: Spatial analysis, area calculations, distance measurements
-- **supercluster**: Point clustering for location density management
-- **zustand**: Global state management for layers, AOIs, POIs
+- **supercluster**: Point clustering for location density management (transitioning to MapTiler native)
+- **zustand**: Global state management for layers, AOIs, POIs (planned for Phase 2B)
 - **papaparse**: CSV import/export functionality
 - **geojson-utils**: GeoJSON validation and processing
 
@@ -187,11 +187,36 @@ const denseArea = scenarios.dense_cluster; // 8 locations for clustering tests
 
 See `src/examples/mockDataExamples.ts` for complete usage examples supporting all HLD workflows.
 
+## MapTiler SDK Configuration
+
+### API Key Setup
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Add your MapTiler Cloud API key
+VITE_MAPTILER_API_KEY=your_api_key_here
+```
+
+### MapTiler Features Used
+- **Professional Map Styles**: MapStyle.STREETS with high-quality tiles
+- **Native Clustering**: Built-in point clustering with expansion zoom
+- **GeoJSON Sources**: Direct map layer rendering without React components
+- **Event System**: Native event listeners (map.on/off) for interactions
+- **Spatial Queries**: queryRenderedFeatures for click handling
+
+### Security Best Practices
+- API keys stored in environment variables (never in source code)
+- .env file excluded from git commits
+- Error handling for missing configuration
+- Production-ready environment variable validation
+
 ## Development Commands
 
 ### Initial Setup
 ```bash
 npm install
+# Configure MapTiler API key in .env file
 ```
 
 ### Development

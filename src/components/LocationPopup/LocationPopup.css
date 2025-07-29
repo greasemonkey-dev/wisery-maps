@@ -1,11 +1,31 @@
+.location-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
 .location-popup {
   min-width: 280px;
   max-width: 300px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  overflow: hidden;
 }
 
 .popup-header {
   padding: 12px 16px 8px 16px;
   border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .popup-title {
@@ -13,6 +33,21 @@
   font-size: 16px;
   font-weight: 600;
   color: #333;
+}
+
+.popup-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.popup-close:hover {
+  background: rgba(0,0,0,0.05);
 }
 
 .popup-content {
@@ -88,29 +123,4 @@
 
 .action-btn.secondary:hover {
   background: #e9ecef;
-}
-
-/* Override default popup styles */
-.maplibregl-popup {
-  max-width: 320px !important;
-}
-
-.maplibregl-popup-content {
-  padding: 0 !important;
-  border-radius: 8px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-}
-
-.maplibregl-popup-close-button {
-  font-size: 20px !important;
-  padding: 8px !important;
-  color: #666 !important;
-}
-
-.maplibregl-popup-close-button:hover {
-  background: rgba(0,0,0,0.05) !important;
-}
-
-.maplibregl-popup-tip {
-  border-top-color: white !important;
 }
