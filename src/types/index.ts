@@ -65,7 +65,7 @@ export interface PolygonValidationResult {
 export interface AOIAnalysis {
   id: string;
   name: string;
-  type: 'triangle' | 'circle' | 'polygon';
+  type: 'triangle' | 'circle' | 'polygon' | 'poi';
   color: string;
   createdAt: Date;
   containedLocations: MapPoint[];
@@ -79,4 +79,22 @@ export interface SpatialAnalysisSummary {
   nonEmptyAOIs: number;
   averageLocationsPerAOI: number;
   mostPopulatedAOI: AOIAnalysis | null;
+}
+
+export interface POI {
+  id: string;
+  name: string;
+  coordinates: [number, number]; // [lng, lat]
+  userId: string;
+  color: string;
+  icon: string;
+  description?: string;
+  category?: string;
+  createdAt: Date;
+}
+
+export interface POIValidationResult {
+  valid: boolean;
+  error?: string;
+  coordinates?: [number, number];
 }

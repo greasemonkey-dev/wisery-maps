@@ -6,14 +6,16 @@ import PointsLayer from '../PointsLayer';
 import TrianglesLayer from '../TrianglesLayer';
 import CirclesLayer from '../CirclesLayer';
 import PolygonsLayer from '../PolygonsLayer';
+import POIsLayer from '../POIsLayer';
 import LocationPopup from '../LocationPopup';
 import AOIDetailsPanel from '../AOIDetailsPanel';
 import TriangleDrawingTool from '../TriangleDrawingTool';
 import CircleDrawingTool from '../CircleDrawingTool';
 import PolygonDrawingTool from '../PolygonDrawingTool';
+import POICreationTool from '../POICreationTool';
 import DrawingPreviewLayer from '../DrawingPreviewLayer';
 import { getAllLocationsAsMapPoints } from '../../utils/mockDataLoader';
-import type { MapPoint, Triangle, Circle, Polygon, AOIAnalysis } from '../../types';
+import type { MapPoint, Triangle, Circle, Polygon, POI, AOIAnalysis } from '../../types';
 import './MapInterface.css';
 
 interface ViewState {
@@ -39,9 +41,11 @@ export default function MapInterface() {
   const [isDrawingTriangle, setIsDrawingTriangle] = useState(false);
   const [isDrawingCircle, setIsDrawingCircle] = useState(false);
   const [isDrawingPolygon, setIsDrawingPolygon] = useState(false);
+  const [isCreatingPOI, setIsCreatingPOI] = useState(false);
   const [triangles, setTriangles] = useState<Triangle[]>([]);
   const [circles, setCircles] = useState<Circle[]>([]);
   const [polygons, setPolygons] = useState<Polygon[]>([]);
+  const [pois, setPOIs] = useState<POI[]>([]);
   const [drawingVertices, setDrawingVertices] = useState<[number, number][]>([]);
   const [circleCenter, setCircleCenter] = useState<[number, number] | null>(null);
   const [circleRadius, setCircleRadius] = useState(0);
@@ -56,11 +60,11 @@ export default function MapInterface() {
 
   const handlePointClick = useCallback((point: MapPoint) => {
     // Don't handle point clicks during drawing
-    if (isDrawingTriangle || isDrawingCircle || isDrawingPolygon) return;
+    if (isDrawingTriangle || isDrawingCircle || isDrawingPolygon || isCreatingPOI) return;
     
     console.log('Point clicked:', point);
     setSelectedPoint(point);
-  }, [isDrawingTriangle, isDrawingCircle, isDrawingPolygon]);
+  }, [isDrawingTriangle, isDrawingCircle, isDrawingPolygon, isCreatingPOI]);
 
   const handleLocationClick = useCallback((location: MapPoint) => {
     console.log('Location clicked from panel:', location);
@@ -103,6 +107,10 @@ export default function MapInterface() {
     setIsDrawingPolygon(true);
   }, []);
 
+  const handleStartPOICreation = useCallback(() => {
+    setIsCreatingPOI(true);
+  }, []);
+
   const handleTriangleComplete = useCallback((triangle: Triangle) => {
     setTriangles(prev => [...prev, triangle]);
     setIsDrawingTriangle(false);
@@ -124,10 +132,17 @@ export default function MapInterface() {
     console.log('Polygon saved:', polygon);
   }, []);
 
+  const handlePOIComplete = useCallback((poi: POI) => {
+    setPOIs(prev => [...prev, poi]);
+    setIsCreatingPOI(false);
+    console.log('POI saved:', poi);
+  }, []);
+
   const handleCancelDrawing = useCallback(() => {
     setIsDrawingTriangle(false);
     setIsDrawingCircle(false);
     setIsDrawingPolygon(false);
+    setIsCreatingPOI(false);
     setDrawingVertices([]);
     setCircleCenter(null);
     setCircleRadius(0);
@@ -155,16 +170,24 @@ export default function MapInterface() {
         onStartDrawing={handleStartDrawing}
         onStartCircleDrawing={handleStartCircleDrawing}
         onStartPolygonDrawing={handleStartPolygonDrawing}
+        onStartPOICreation={handleStartPOICreation}
         onAOIClick={handleAOIClick}
         triangles={triangles}
         circles={circles}
         polygons={polygons}
+        pois={pois}
       />
       <div className="map-main">
         <MapCanvas viewState={viewState} onMove={handleMove} onMapLoad={handleMapLoad}>
           <TrianglesLayer triangles={triangles} />
           <CirclesLayer circles={circles} />
           <PolygonsLayer polygons={polygons} />
+          <POIsLayer 
+            pois={pois} 
+            onPOIClick={(poi: POI) => console.log('POI clicked:', poi)}
+            isDrawingDisabled={isDrawingTriangle || isDrawingCircle || isDrawingPolygon || isCreatingPOI}
+            map={mapRef}
+          />
           <DrawingPreviewLayer 
             vertices={drawingVertices} 
             isDrawing={isDrawingTriangle || isDrawingCircle || isDrawingPolygon}
@@ -177,7 +200,7 @@ export default function MapInterface() {
             points={allLocations} 
             onPointClick={handlePointClick}
             zoom={viewState.zoom}
-            isDrawingDisabled={isDrawingTriangle || isDrawingCircle || isDrawingPolygon}
+            isDrawingDisabled={isDrawingTriangle || isDrawingCircle || isDrawingPolygon || isCreatingPOI}
             map={mapRef}
           />
           {selectedPoint && (
@@ -209,6 +232,14 @@ export default function MapInterface() {
           onCancel={handleCancelDrawing}
           onDrawingProgress={handleDrawingProgress}
           existingPolygonsCount={polygons.length}
+          mapRef={mapRef}
+        />
+        <POICreationTool
+          isCreating={isCreatingPOI}
+          onPOIComplete={handlePOIComplete}
+          onCancel={handleCancelDrawing}
+          existingPOIs={pois}
+          existingPOIsCount={pois.length}
           mapRef={mapRef}
         />
         
