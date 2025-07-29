@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import ExtractedLocationsTree from '../ExtractedLocationsTree';
 import { analyzeAllAOIs } from '../../utils/spatialAnalysis';
 import { getAllLocationsAsMapPoints } from '../../utils/mockDataLoader';
-import type { MapPoint, Triangle, Circle, Polygon, AOIAnalysis } from '../../types';
+import type { MapPoint, Triangle, Circle, Polygon, POI, AOIAnalysis } from '../../types';
 import './LocationPanel.css';
 
 interface LocationPanelProps {
@@ -11,10 +11,12 @@ interface LocationPanelProps {
   onStartDrawing?: () => void;
   onStartCircleDrawing?: () => void;
   onStartPolygonDrawing?: () => void;
+  onStartPOICreation?: () => void;
   onAOIClick?: (aoiAnalysis: AOIAnalysis) => void;
   triangles?: Triangle[];
   circles?: Circle[];
   polygons?: Polygon[];
+  pois?: POI[];
 }
 
 export default function LocationPanel({ 
@@ -23,10 +25,12 @@ export default function LocationPanel({
   onStartDrawing,
   onStartCircleDrawing,
   onStartPolygonDrawing,
+  onStartPOICreation,
   onAOIClick,
   triangles = [],
   circles = [],
-  polygons = []
+  polygons = [],
+  pois = []
 }: LocationPanelProps) {
   // Calculate spatial analysis for all AOIs
   const allLocations = useMemo(() => getAllLocationsAsMapPoints(), []);
@@ -159,6 +163,44 @@ export default function LocationPanel({
           {polygons.length === 0 && (
             <div className="no-polygons">
               <span className="placeholder-text">No polygons yet. Click [+ New] to draw one.</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="pois-section">
+        <div className="section-header">
+          <h3>📍 My POIs</h3>
+          <button 
+            className="add-poi-btn"
+            onClick={onStartPOICreation}
+          >
+            [+ New]
+          </button>
+        </div>
+        
+        <div className="poi-items">
+          {pois.map((poi) => (
+            <div 
+              key={poi.id} 
+              className="poi-item"
+              onClick={() => console.log('POI clicked from panel:', poi)}
+            >
+              <span className="poi-icon" style={{ color: poi.color }}>📍</span>
+              <div className="poi-info">
+                <span className="poi-name">{poi.name}</span>
+                <div className="poi-meta">
+                  <span className="poi-category">({poi.category})</span>
+                  {poi.description && (
+                    <span className="poi-description">{poi.description}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+          {pois.length === 0 && (
+            <div className="no-pois">
+              <span className="placeholder-text">No POIs yet. Click [+ New] to create one.</span>
             </div>
           )}
         </div>
