@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { type MapRef } from 'react-map-gl/maplibre';
+import { Map } from '@maptiler/sdk';
 import { validateTriangle, assignTriangleColor } from '../../utils/triangleValidation';
 import type { Triangle } from '../../types';
 import './TriangleDrawingTool.css';
@@ -10,7 +10,7 @@ interface TriangleDrawingToolProps {
   onCancel: () => void;
   onDrawingProgress?: (vertices: [number, number][]) => void;
   existingTrianglesCount: number;
-  mapRef: MapRef | null;
+  mapRef: Map | null;
 }
 
 type DrawingState = 'idle' | 'drawing' | 'complete';

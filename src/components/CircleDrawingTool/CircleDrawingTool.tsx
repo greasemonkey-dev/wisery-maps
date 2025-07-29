@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { type MapRef } from 'react-map-gl/maplibre';
+import { Map } from '@maptiler/sdk';
 import { validateCircle, assignCircleColor, calculateDistance, formatRadius } from '../../utils/circleValidation';
 import type { Circle } from '../../types';
 import './CircleDrawingTool.css';
@@ -10,7 +10,7 @@ interface CircleDrawingToolProps {
   onCancel: () => void;
   onDrawingProgress?: (center: [number, number] | null, radius: number) => void;
   existingCirclesCount: number;
-  mapRef: MapRef | null;
+  mapRef: Map | null;
 }
 
 type DrawingState = 'idle' | 'drawing' | 'complete';

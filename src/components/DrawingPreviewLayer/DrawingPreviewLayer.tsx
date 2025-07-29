@@ -19,13 +19,15 @@ function createCirclePolygon(center: [number, number], radiusInMeters: number) {
   const points = 32; // Fewer points for preview performance
   const coordinates = [];
   
-  // Convert radius from meters to degrees (rough approximation)
-  const radiusInDegrees = radiusInMeters / 111320;
+  // Convert radius from meters to degrees with proper geographic scaling
+  // Latitude degrees are consistent, but longitude degrees vary by latitude
+  const radiusInLatDegrees = radiusInMeters / 111320; // Consistent for latitude
+  const radiusInLngDegrees = radiusInMeters / (111320 * Math.cos(center[1] * Math.PI / 180)); // Varies by latitude
   
   for (let i = 0; i <= points; i++) {
     const angle = (i * 2 * Math.PI) / points;
-    const lng = center[0] + radiusInDegrees * Math.cos(angle);
-    const lat = center[1] + radiusInDegrees * Math.sin(angle);
+    const lng = center[0] + radiusInLngDegrees * Math.cos(angle);
+    const lat = center[1] + radiusInLatDegrees * Math.sin(angle);
     coordinates.push([lng, lat]);
   }
   

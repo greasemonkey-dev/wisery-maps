@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { type ViewState, type MapRef } from 'react-map-gl/maplibre';
+import { Map } from '@maptiler/sdk';
 import MapCanvas from '../MapCanvas';
 import LocationPanel from '../LocationPanel';
 import PointsLayer from '../PointsLayer';
@@ -16,13 +16,20 @@ import { getAllLocationsAsMapPoints } from '../../utils/mockDataLoader';
 import type { MapPoint, Triangle, Circle, Polygon, AOIAnalysis } from '../../types';
 import './MapInterface.css';
 
+interface ViewState {
+  longitude: number;
+  latitude: number;
+  zoom: number;
+  bearing?: number;
+  pitch?: number;
+}
+
 const INITIAL_VIEW_STATE: ViewState = {
   longitude: -0.1276,
   latitude: 51.5074,
   zoom: 12,
   bearing: 0,
   pitch: 0,
-  padding: { top: 0, bottom: 0, left: 0, right: 0 }
 };
 
 export default function MapInterface() {
@@ -38,7 +45,7 @@ export default function MapInterface() {
   const [drawingVertices, setDrawingVertices] = useState<[number, number][]>([]);
   const [circleCenter, setCircleCenter] = useState<[number, number] | null>(null);
   const [circleRadius, setCircleRadius] = useState(0);
-  const [mapRef, setMapRef] = useState<MapRef | null>(null);
+  const [mapRef, setMapRef] = useState<Map | null>(null);
 
   // Load mock data
   const allLocations = useMemo(() => getAllLocationsAsMapPoints(), []);
@@ -135,7 +142,7 @@ export default function MapInterface() {
     setCircleRadius(radius);
   }, []);
 
-  const handleMapLoad = useCallback((map: MapRef) => {
+  const handleMapLoad = useCallback((map: Map) => {
     console.log('Map loaded, setting mapRef');
     setMapRef(map);
   }, []);

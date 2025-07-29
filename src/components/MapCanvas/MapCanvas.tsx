@@ -1,42 +1,119 @@
-import React, { useCallback, useRef } from 'react';
-import Map, { type MapRef, type ViewState } from 'react-map-gl/maplibre';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import React, { useRef, useEffect } from 'react';
+import { Map, config, MapStyle } from '@maptiler/sdk';
+import '@maptiler/sdk/dist/maptiler-sdk.css';
+
+// Configure MapTiler API key
+config.apiKey = 'IOegHViiczZRkx2lZpbB';
+
+interface ViewState {
+  longitude: number;
+  latitude: number;
+  zoom: number;
+  bearing?: number;
+  pitch?: number;
+}
 
 interface MapCanvasProps {
   viewState: ViewState;
   onMove: (evt: { viewState: ViewState }) => void;
   children?: React.ReactNode;
-  onMapLoad?: (mapRef: MapRef) => void;
+  onMapLoad?: (map: Map) => void;
 }
 
 export default function MapCanvas({ viewState, onMove, children, onMapLoad }: MapCanvasProps) {
-  const mapRef = useRef<MapRef>(null);
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<Map | null>(null);
 
-  const handleMove = useCallback((evt: { viewState: ViewState }) => {
-    onMove(evt);
-  }, [onMove]);
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
 
-  const handleLoad = useCallback(() => {
-    if (mapRef.current && onMapLoad) {
-      onMapLoad(mapRef.current);
+    // Initialize MapTiler SDK map
+    const map = new Map({
+      container: mapContainerRef.current,
+      style: MapStyle.STREETS,
+      center: [viewState.longitude, viewState.latitude],
+      zoom: viewState.zoom,
+      bearing: viewState.bearing || 0,
+      pitch: viewState.pitch || 0,
+    });
+
+    mapInstanceRef.current = map;
+
+    // Handle map move events
+    const handleMove = () => {
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      const bearing = map.getBearing();
+      const pitch = map.getPitch();
+
+      onMove({
+        viewState: {
+          longitude: center.lng,
+          latitude: center.lat,
+          zoom,
+          bearing,
+          pitch,
+        },
+      });
+    };
+
+    // Handle map load event
+    const handleLoad = () => {
+      if (onMapLoad) {
+        onMapLoad(map);
+      }
+    };
+
+    // Register event listeners
+    map.on('move', handleMove);
+    map.on('load', handleLoad);
+
+    // Cleanup function
+    return () => {
+      map.off('move', handleMove);
+      map.off('load', handleLoad);
+      map.remove();
+      mapInstanceRef.current = null;
+    };
+  }, []); // Empty dependency array for initial setup only
+
+  // Update map view when viewState prop changes
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      const map = mapInstanceRef.current;
+      const currentCenter = map.getCenter();
+      const currentZoom = map.getZoom();
+      
+      // Only update if values have changed to avoid infinite loops
+      if (
+        Math.abs(currentCenter.lng - viewState.longitude) > 0.0001 ||
+        Math.abs(currentCenter.lat - viewState.latitude) > 0.0001 ||
+        Math.abs(currentZoom - viewState.zoom) > 0.01
+      ) {
+        map.easeTo({
+          center: [viewState.longitude, viewState.latitude],
+          zoom: viewState.zoom,
+          bearing: viewState.bearing || 0,
+          pitch: viewState.pitch || 0,
+          duration: 300,
+        });
+      }
     }
-  }, [onMapLoad]);
+  }, [viewState]);
 
   return (
     <div className="map-container" style={{ width: '100%', height: '100vh' }}>
-      <Map
+      <div
+        ref={mapContainerRef}
         id="main-map"
-        ref={mapRef}
-        {...viewState}
-        onMove={handleMove}
-        onLoad={handleLoad}
-        mapStyle="https://demotiles.maplibre.org/style.json"
         style={{ width: '100%', height: '100%' }}
-        attributionControl={false}
-        cooperativeGestures={false}
-      >
-        {children}
-      </Map>
+      />
+      {/* Note: Children handling would need to be reimplemented based on use case */}
+      {children && (
+        <div style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}>
+          {children}
+        </div>
+      )}
     </div>
   );
 }

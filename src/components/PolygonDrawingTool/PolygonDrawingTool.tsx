@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { type MapRef } from 'react-map-gl/maplibre';
+import { Map } from '@maptiler/sdk';
 import { validatePolygon, assignPolygonColor, isPointNearby } from '../../utils/polygonValidation';
 import type { Polygon } from '../../types';
 import './PolygonDrawingTool.css';
@@ -10,7 +10,7 @@ interface PolygonDrawingToolProps {
   onCancel: () => void;
   onDrawingProgress?: (vertices: [number, number][]) => void;
   existingPolygonsCount: number;
-  mapRef: MapRef | null;
+  mapRef: Map | null;
 }
 
 type DrawingState = 'idle' | 'drawing' | 'complete';
