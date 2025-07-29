@@ -2,8 +2,12 @@ import React, { useRef, useEffect } from 'react';
 import { Map, config, MapStyle } from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 
-// Configure MapTiler API key
-config.apiKey = 'IOegHViiczZRkx2lZpbB';
+// Configure MapTiler API key from environment variable
+const apiKey = import.meta.env.VITE_MAPTILER_API_KEY;
+if (!apiKey) {
+  console.error('VITE_MAPTILER_API_KEY environment variable is not set. Please add it to your .env file.');
+}
+config.apiKey = apiKey;
 
 interface ViewState {
   longitude: number;
