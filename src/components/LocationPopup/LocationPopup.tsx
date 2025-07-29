@@ -1,4 +1,3 @@
-import { Popup } from 'react-map-gl/maplibre';
 import type { MapPoint } from '../../types';
 import './LocationPopup.css';
 
@@ -28,18 +27,11 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
   };
 
   return (
-    <Popup
-      longitude={location.coordinates[0]}
-      latitude={location.coordinates[1]}
-      onClose={onClose}
-      closeButton={true}
-      closeOnClick={false}
-      anchor="bottom"
-      maxWidth="300px"
-    >
-      <div className="location-popup">
+    <div className="location-popup-overlay" onClick={onClose}>
+      <div className="location-popup" onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
           <h3 className="popup-title">📍 Location Details</h3>
+          <button className="popup-close" onClick={onClose}>×</button>
         </div>
         
         <div className="popup-content">
@@ -71,6 +63,6 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
           <button className="action-btn secondary">Add to Query</button>
         </div>
       </div>
-    </Popup>
+    </div>
   );
 }
