@@ -89,6 +89,31 @@ export default function MapInterface() {
     setSelectedPoint(location);
   }, []);
 
+  const handlePOIClick = useCallback((poi: POI) => {
+    console.log('POI clicked from panel:', poi);
+    
+    // Convert POI to MapPoint format for popup
+    const poiAsMapPoint: MapPoint = {
+      id: poi.id,
+      coordinates: poi.coordinates,
+      label: poi.name,
+      messageId: 'poi', // POIs don't belong to messages
+      context: poi.description || `${poi.category || 'Custom'} POI`,
+      timestamp: poi.createdAt.toISOString()
+    };
+    
+    // Center map on POI
+    setViewState(prev => ({
+      ...prev,
+      longitude: poi.coordinates[0],
+      latitude: poi.coordinates[1],
+      zoom: Math.max(prev.zoom, 15)
+    }));
+    
+    // Show popup
+    setSelectedPoint(poiAsMapPoint);
+  }, []);
+
   const handlePopupClose = useCallback(() => {
     setSelectedPoint(null);
   }, []);
@@ -191,6 +216,7 @@ export default function MapInterface() {
         onStartPolygonDrawing={handleStartPolygonDrawing}
         onStartPOICreation={handleStartPOICreation}
         onAOIClick={handleAOIClick}
+        onPOIClick={handlePOIClick}
         triangles={triangles}
         circles={circles}
         polygons={polygons}
@@ -199,9 +225,9 @@ export default function MapInterface() {
       />
       <div className="map-main">
         <MapCanvas viewState={viewState} onMove={handleMove} onMapLoad={handleMapLoad}>
-          <TrianglesLayer triangles={triangles} />
-          <CirclesLayer circles={circles} />
-          <PolygonsLayer polygons={polygons} />
+          <TrianglesLayer triangles={triangles} map={mapRef} />
+          <CirclesLayer circles={circles} map={mapRef} />
+          <PolygonsLayer polygons={polygons} map={mapRef} />
           <POIsLayer 
             pois={pois} 
             onPOIClick={(poi: POI) => console.log('POI clicked:', poi)}
@@ -215,6 +241,7 @@ export default function MapInterface() {
             circleRadius={circleRadius}
             isDrawingCircle={isDrawingCircle}
             isDrawingPolygon={isDrawingPolygon}
+            isDrawingTriangle={isDrawingTriangle}
             map={mapRef}
           />
           <PointsLayer 

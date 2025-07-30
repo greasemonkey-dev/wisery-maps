@@ -9,6 +9,7 @@ interface DrawingPreviewLayerProps {
   circleRadius?: number;
   isDrawingCircle?: boolean;
   isDrawingPolygon?: boolean;
+  isDrawingTriangle?: boolean;
   map?: Map | null;
 }
 
@@ -19,6 +20,7 @@ export default function DrawingPreviewLayer({
   circleRadius, 
   isDrawingCircle, 
   isDrawingPolygon,
+  isDrawingTriangle,
   map 
 }: DrawingPreviewLayerProps) {
   console.log('DrawingPreviewLayer: Preview state', { 
@@ -26,6 +28,7 @@ export default function DrawingPreviewLayer({
     isDrawing, 
     isDrawingCircle, 
     isDrawingPolygon,
+    isDrawingTriangle,
     circleCenter,
     circleRadius
   });
@@ -85,6 +88,76 @@ export default function DrawingPreviewLayer({
       ]
     };
   }, [isDrawingPolygon, vertices]);
+
+  // Generate triangle preview GeoJSON
+  const triangleGeoJSON = useMemo(() => {
+    if (!isDrawingTriangle || vertices.length === 0) {
+      return null;
+    }
+
+    if (vertices.length === 1) {
+      // Show first point
+      return {
+        type: 'FeatureCollection' as const,
+        features: [
+          {
+            type: 'Feature' as const,
+            geometry: {
+              type: 'Point' as const,
+              coordinates: vertices[0]
+            },
+            properties: {
+              id: 'preview-triangle-point',
+              type: 'preview'
+            }
+          }
+        ]
+      };
+    } else if (vertices.length === 2) {
+      // Show line between first two points
+      return {
+        type: 'FeatureCollection' as const,
+        features: [
+          {
+            type: 'Feature' as const,
+            geometry: {
+              type: 'LineString' as const,
+              coordinates: vertices
+            },
+            properties: {
+              id: 'preview-triangle-line',
+              type: 'preview'
+            }
+          }
+        ]
+      };
+    } else if (vertices.length === 3) {
+      // Show complete triangle
+      return {
+        type: 'FeatureCollection' as const,
+        features: [
+          {
+            type: 'Feature' as const,
+            geometry: {
+              type: 'Polygon' as const,
+              coordinates: [
+                [
+                  ...vertices,
+                  vertices[0] // Close the triangle
+                ]
+              ]
+            },
+            properties: {
+              id: 'preview-triangle',
+              type: 'preview'
+            }
+          }
+        ]
+      };
+    }
+
+    return null;
+  }, [isDrawingTriangle, vertices]);
 
   // Add/update circle preview layer
   useEffect(() => {
@@ -182,6 +255,95 @@ export default function DrawingPreviewLayer({
     }
   }, [map, isDrawingPolygon, polygonGeoJSON]);
 
+  // Add/update triangle preview layer
+  useEffect(() => {
+    if (!map || !isDrawingTriangle) {
+      // Remove triangle preview if not drawing
+      if (map?.getSource('preview-triangle-source')) {
+        try {
+          map.removeLayer('preview-triangle-fill');
+          map.removeLayer('preview-triangle-outline');
+          map.removeLayer('preview-triangle-point');
+          map.removeLayer('preview-triangle-line');
+          map.removeSource('preview-triangle-source');
+        } catch (error) {
+          console.warn('Error removing triangle preview layers:', error);
+        }
+      }
+      return;
+    }
+
+    if (!triangleGeoJSON) return;
+
+    try {
+      // Add or update triangle preview source
+      if (map.getSource('preview-triangle-source')) {
+        const source = map.getSource('preview-triangle-source') as any;
+        source.setData(triangleGeoJSON);
+      } else {
+        // Add source
+        map.addSource('preview-triangle-source', {
+          type: 'geojson',
+          data: triangleGeoJSON
+        });
+
+        // Add point layer (for first click)
+        map.addLayer({
+          id: 'preview-triangle-point',
+          type: 'circle',
+          source: 'preview-triangle-source',
+          filter: ['==', '$type', 'Point'],
+          paint: {
+            'circle-color': '#4CBACB',
+            'circle-radius': 6,
+            'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff'
+          }
+        });
+
+        // Add line layer (for second click)
+        map.addLayer({
+          id: 'preview-triangle-line',
+          type: 'line',
+          source: 'preview-triangle-source',
+          filter: ['==', '$type', 'LineString'],
+          paint: {
+            'line-color': '#4CBACB',
+            'line-width': 2,
+            'line-dasharray': [5, 5]
+          }
+        });
+
+        // Add fill layer (for completed triangle)
+        map.addLayer({
+          id: 'preview-triangle-fill',
+          type: 'fill',
+          source: 'preview-triangle-source',
+          filter: ['==', '$type', 'Polygon'],
+          paint: {
+            'fill-color': '#4CBACB',
+            'fill-opacity': 0.2
+          }
+        });
+
+        // Add outline layer (for completed triangle)
+        map.addLayer({
+          id: 'preview-triangle-outline',
+          type: 'line',
+          source: 'preview-triangle-source',
+          filter: ['==', '$type', 'Polygon'],
+          paint: {
+            'line-color': '#4CBACB',
+            'line-width': 2,
+            'line-dasharray': [5, 5]
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error adding triangle preview layer:', error);
+    }
+  }, [map, isDrawingTriangle, triangleGeoJSON]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -205,6 +367,19 @@ export default function DrawingPreviewLayer({
           }
         } catch (error) {
           console.warn('Error cleaning up polygon preview:', error);
+        }
+
+        // Clean up triangle preview
+        try {
+          if (map.getSource('preview-triangle-source')) {
+            map.removeLayer('preview-triangle-fill');
+            map.removeLayer('preview-triangle-outline');
+            map.removeLayer('preview-triangle-point');
+            map.removeLayer('preview-triangle-line');
+            map.removeSource('preview-triangle-source');
+          }
+        } catch (error) {
+          console.warn('Error cleaning up triangle preview:', error);
         }
       }
     };

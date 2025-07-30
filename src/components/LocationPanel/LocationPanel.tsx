@@ -13,6 +13,7 @@ interface LocationPanelProps {
   onStartPolygonDrawing?: () => void;
   onStartPOICreation?: () => void;
   onAOIClick?: (aoiAnalysis: AOIAnalysis) => void;
+  onPOIClick?: (poi: POI) => void;
   triangles?: Triangle[];
   circles?: Circle[];
   polygons?: Polygon[];
@@ -28,6 +29,7 @@ export default function LocationPanel({
   onStartPolygonDrawing,
   onStartPOICreation,
   onAOIClick,
+  onPOIClick,
   triangles = [],
   circles = [],
   polygons = [],
@@ -187,7 +189,7 @@ export default function LocationPanel({
             <div 
               key={poi.id} 
               className="poi-item"
-              onClick={() => console.log('POI clicked from panel:', poi)}
+              onClick={() => onPOIClick?.(poi)}
             >
               <span className="poi-icon" style={{ color: poi.color }}>📍</span>
               <div className="poi-info">
