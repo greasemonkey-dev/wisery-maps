@@ -17,6 +17,7 @@ interface LocationPanelProps {
   circles?: Circle[];
   polygons?: Polygon[];
   pois?: POI[];
+  visibleLocations?: MapPoint[];
 }
 
 export default function LocationPanel({ 
@@ -30,13 +31,15 @@ export default function LocationPanel({
   triangles = [],
   circles = [],
   polygons = [],
-  pois = []
+  pois = [],
+  visibleLocations
 }: LocationPanelProps) {
-  // Calculate spatial analysis for all AOIs
+  // Calculate spatial analysis for all AOIs using visible locations
   const allLocations = useMemo(() => getAllLocationsAsMapPoints(), []);
+  const locationsForAnalysis = visibleLocations || allLocations;
   const aoiAnalyses = useMemo(() => {
-    return analyzeAllAOIs(triangles, circles, polygons, allLocations);
-  }, [triangles, circles, polygons, allLocations]);
+    return analyzeAllAOIs(triangles, circles, polygons, locationsForAnalysis);
+  }, [triangles, circles, polygons, locationsForAnalysis]);
 
   // Helper to get analysis for specific AOI
   const getAOIAnalysis = (id: string, type: string) => {
