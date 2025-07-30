@@ -26,6 +26,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .popup-title {
@@ -40,14 +42,35 @@
   border: none;
   font-size: 20px;
   color: #666;
-  cursor: pointer;
+  cursor: pointer !important;
   padding: 4px 8px;
   border-radius: 4px;
   transition: background 0.2s ease;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
+  user-select: none;
+  -webkit-user-select: none;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .popup-close:hover {
   background: rgba(0,0,0,0.05);
+  cursor: pointer !important;
+}
+
+.popup-close:active {
+  background: rgba(0,0,0,0.1);
+  transform: scale(0.95);
+}
+
+.popup-close:focus {
+  outline: 2px solid #4CBACB;
+  outline-offset: 2px;
 }
 
 .popup-content {
