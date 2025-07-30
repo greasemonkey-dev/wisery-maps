@@ -215,6 +215,7 @@ export default function MapInterface() {
             circleRadius={circleRadius}
             isDrawingCircle={isDrawingCircle}
             isDrawingPolygon={isDrawingPolygon}
+            map={mapRef}
           />
           <PointsLayer 
             points={visibleLocations} 
