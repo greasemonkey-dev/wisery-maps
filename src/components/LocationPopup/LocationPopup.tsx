@@ -31,7 +31,15 @@ export default function LocationPopup({ location, onClose }: LocationPopupProps)
       <div className="location-popup" onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
           <h3 className="popup-title">📍 Location Details</h3>
-          <button className="popup-close" onClick={onClose}>×</button>
+          <button 
+            className="popup-close" 
+            onClick={onClose}
+            type="button"
+            aria-label="Close popup"
+            data-testid="close-popup-button"
+          >
+            ×
+          </button>
         </div>
         
         <div className="popup-content">
