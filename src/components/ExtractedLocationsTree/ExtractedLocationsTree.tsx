@@ -64,11 +64,37 @@ export default function ExtractedLocationsTree({
     onLocationClick?.(location);
   };
 
+  const toggleAllGroups = () => {
+    const allMessageIds = organizedData.flatMap(conv => 
+      conv.messages.map(msg => msg.messageId)
+    );
+    
+    // If all groups are visible, hide all; otherwise show all
+    const allVisible = allMessageIds.every(id => visibleGroups.has(id));
+    
+    if (allVisible) {
+      // Hide all groups
+      setVisibleGroups(new Set());
+      allMessageIds.forEach(id => onLocationGroupToggle?.(id, false));
+    } else {
+      // Show all groups
+      const newVisibleGroups = new Set(allMessageIds);
+      setVisibleGroups(newVisibleGroups);
+      allMessageIds.forEach(id => onLocationGroupToggle?.(id, true));
+    }
+  };
+
   return (
     <div className="extracted-locations-tree">
       <div className="tree-header">
         <h2>📍 Extracted Locations</h2>
-        <button className="toggle-all-btn">[Toggle All]</button>
+        <button 
+          className="toggle-all-btn"
+          onClick={toggleAllGroups}
+          title="Toggle visibility of all location groups"
+        >
+          [Toggle All]
+        </button>
       </div>
       
       <div className="tree-content">

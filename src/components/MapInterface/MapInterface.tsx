@@ -50,9 +50,20 @@ export default function MapInterface() {
   const [circleCenter, setCircleCenter] = useState<[number, number] | null>(null);
   const [circleRadius, setCircleRadius] = useState(0);
   const [mapRef, setMapRef] = useState<Map | null>(null);
+  const [visibleMessageGroups, setVisibleMessageGroups] = useState<Set<string>>(new Set());
 
   // Load mock data
   const allLocations = useMemo(() => getAllLocationsAsMapPoints(), []);
+  
+  // Filter visible locations based on group visibility
+  const visibleLocations = useMemo(() => {
+    if (visibleMessageGroups.size === 0) {
+      return allLocations; // Show all if none are specifically hidden
+    }
+    return allLocations.filter(location => 
+      visibleMessageGroups.has(location.messageId)
+    );
+  }, [allLocations, visibleMessageGroups]);
 
   const handleMove = useCallback((evt: { viewState: ViewState }) => {
     setViewState(evt.viewState);
@@ -92,7 +103,15 @@ export default function MapInterface() {
 
   const handleLocationGroupToggle = useCallback((messageId: string, visible: boolean) => {
     console.log('Group toggled:', messageId, visible);
-    // TODO: Filter displayed points based on visibility
+    setVisibleMessageGroups(prev => {
+      const newSet = new Set(prev);
+      if (visible) {
+        newSet.add(messageId);
+      } else {
+        newSet.delete(messageId);
+      }
+      return newSet;
+    });
   }, []);
 
   const handleStartDrawing = useCallback(() => {
@@ -176,6 +195,7 @@ export default function MapInterface() {
         circles={circles}
         polygons={polygons}
         pois={pois}
+        visibleLocations={visibleLocations}
       />
       <div className="map-main">
         <MapCanvas viewState={viewState} onMove={handleMove} onMapLoad={handleMapLoad}>
@@ -197,7 +217,7 @@ export default function MapInterface() {
             isDrawingPolygon={isDrawingPolygon}
           />
           <PointsLayer 
-            points={allLocations} 
+            points={visibleLocations} 
             onPointClick={handlePointClick}
             zoom={viewState.zoom}
             isDrawingDisabled={isDrawingTriangle || isDrawingCircle || isDrawingPolygon || isCreatingPOI}
